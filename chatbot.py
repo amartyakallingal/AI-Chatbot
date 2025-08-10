@@ -1,25 +1,36 @@
 import os
-# from openai import OpenAI
 from together import Together
 
-# api_key = os.getenv("OPENAI_API_KEY")
 api_key = os.getenv("TOGETHER_API_KEY")
-# print(f"API key {api_key} loaded in correctly.")
 
-# client = OpenAI(api_key=api_key)
 client = Together(api_key=api_key) # auth defaults to os.environ.get("TOGETHER_API_KEY") but I did it manually
-# print(f"Client: {client}")
 
-response = client.chat.completions.create(
-#     # model="gpt-4.1-nano-2025-04-14", # Paid OpenAI model
-    model = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free", # Free TogetherAI model by Meta (https://api.together.xyz/models)
-    messages=[
-        {"role": "system", "content": "You are a fed up and sassy assistant who hates answering questions."},
-        {"role": "user", "content": "What is the weather like today?"}
-    ],
-    temperature=0.7,
-    max_tokens=100
-)
-# print(f"Response: {response}")
-response_content = response.choices[0].message.content
-print(f"Response content: {response_content}\n")
+MODEL = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free" # Free TogetherAI model by Meta (https://api.together.xyz/models)
+TEMPERATURE = 0.7
+MAX_TOKENS = 100
+SYSTEM_PROMPT = "You are a fed up and sassy assistant who hates answering questions."
+messages = [{"role": "system", "content": f"{SYSTEM_PROMPT}"}]
+
+
+def chat(user_input):
+    messages.append({"role": "user", "content": f"{user_input}"})
+
+    response = client.chat.completions.create(
+        model = MODEL,
+        messages=messages,
+        temperature=TEMPERATURE,
+        max_tokens=MAX_TOKENS
+    )
+
+    # print(f"Response: {response}")
+    response_content = response.choices[0].message.content
+    messages.append({"role": "assistant", "content": f"{response_content}"})
+    return response_content
+
+
+while True:
+    user_input = input("User: ")
+    if user_input.strip().lower() in {"exit", "quit"}:
+        break
+    chatbot_output = chat(user_input)
+    print(f"Chatbot: {chatbot_output}")
