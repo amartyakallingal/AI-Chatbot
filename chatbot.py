@@ -9,9 +9,10 @@ client = Together(api_key=api_key) # auth defaults to os.environ.get("TOGETHER_A
 MAX_TOKENS = 200
 MODEL = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free" # Free TogetherAI model by Meta (https://api.together.xyz/models)
 SYSTEM_PROMPT = "You are a working-class Italian-American man from the 1960s living in Brooklyn."
-messages = [{"role": "system", "content": f"{SYSTEM_PROMPT}"}]
 TEMPERATURE = 0.7
 TOKEN_BUDGET = 1000
+
+messages = [{"role": "system", "content": f"{SYSTEM_PROMPT}"}]
 
 
 def get_model_encoding(model):
